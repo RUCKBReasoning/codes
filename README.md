@@ -113,7 +113,7 @@ cd SimCSE
 python setup.py install
 cd ..
 ```
-Lastly, make sure to download the necessary datasets (including Spider and Bird) [data.zip](https://drive.google.com/file/d/1-tfTMpc4gEtPqje_9jv-NU4csPQQz622/view?usp=sharing), as well as the schema item classifier checkpoints [sic_ckpts.zip](https://drive.google.com/file/d/1Q0YlfQJwLHesfZv_aE0pa_AWEHsg6XBv/view?usp=sharing), along with Spider's evaluation scripts [test_suite_sql_eval.zip](https://drive.google.com/file/d/1HIKBL7pP_hzWH1ryRNsjPO-N__UluOlK/view?usp=sharing). Once downloaded, simply unzip these files in the root folder.
+Lastly, make sure to download the necessary datasets (including Spider and Bird) [data.zip](https://drive.google.com/file/d/1-tfTMpc4gEtPqje_9jv-NU4csPQQz622/view?usp=sharing), as well as the schema item classifier checkpoints [sic_ckpts.zip](https://drive.google.com/file/d/1V3F4ihTSPbV18g3lrg94VMH-kbWR_-lY/view?usp=sharing), along with Spider's evaluation scripts [test_suite_sql_eval.zip](https://drive.google.com/file/d/1HIKBL7pP_hzWH1ryRNsjPO-N__UluOlK/view?usp=sharing). Once downloaded, simply unzip these files in the root folder.
 ```
 unzip data.zip
 unzip sic_ckpts.zip
