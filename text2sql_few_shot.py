@@ -251,6 +251,3 @@ if __name__ == "__main__":
         os.system('python -u test_suite_sql_eval/evaluation.py --gold ./data/sft_data_collections/spider/dev_gold.sql --pred pred_sqls.txt --db ./data/sft_data_collections/spider/database --etype exec')
         print("Test suit execution accuracy:")
         os.system('python -u test_suite_sql_eval/evaluation.py --gold ./data/sft_data_collections/spider/dev_gold.sql --pred pred_sqls.txt --db test_suite_sql_eval/test_suite_database --etype exec')
-    elif "kaggle" in opt.dataset_path:
-        print("Execution accuracy:")
-        os.system('python -u test_suite_sql_eval/evaluation.py --gold ./data/sft_data_collections/kaggle-dbqa/kaggle_gold.sql --pred pred_sqls.txt --db ./data/sft_data_collections/kaggle-dbqa/databases --etype exec')
