@@ -244,8 +244,7 @@ if __name__ == "__main__":
 
     print("LLM name:", opt.model_path)
     if "bird" in opt.dataset_path:
-        os.system('python -u bird/llm/exp_result/my_model_output_kg/extract_results.py')
-        os.system('sh bird/llm/run/my_run_evaluation.sh')
+        os.system('sh bird_evaluation/run_evaluation.sh')
     elif "spider" in opt.dataset_path:
         print("Execution accuracy:")
         os.system('python -u test_suite_sql_eval/evaluation.py --gold ./data/sft_data_collections/spider/dev_gold.sql --pred pred_sqls.txt --db ./data/sft_data_collections/spider/database --etype exec')
