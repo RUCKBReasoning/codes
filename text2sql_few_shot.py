@@ -4,6 +4,7 @@ import os
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 import nltk
+import random
 import numpy as np
 from schema_item_filter import SchemaItemClassifierInference, filter_schema
 import torch
@@ -13,29 +14,34 @@ from transformers.trainer_utils import set_seed
 
 def parse_option():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type = str)
-    parser.add_argument('--sic_path', type = str, default = None)
+    parser.add_argument('--llm_path', type = str)
+    parser.add_argument('--sic_path', type = str)
+    parser.add_argument('--table_num', type = int, default = 5)
+    parser.add_argument('--column_num', type = int, default = 6)
     
     parser.add_argument('--dataset_path', type = str)
     parser.add_argument('--demonstration_set_path', type = str)
     parser.add_argument('--num_of_demonstrations', type = int)
 
-    parser.add_argument('--load_in_4bit', action = 'store_true')
-    parser.add_argument('--load_in_8bit', action = 'store_true')
+    parser.add_argument('--max_tokens', type = int)
+    parser.add_argument('--max_new_tokens', type = int)
 
     opt = parser.parse_args()
 
     return opt
 
-# TODO: refine this post processing function
 def post_process(sql, schema_items):
     sql = sql.replace("\n", " ")
     for table in schema_items:
         for column_name in table["column_names"]:
-            special_char_in_column_name = detect_special_char(column_name)
-            if special_char_in_column_name and column_name in sql and "`"+column_name+"`" not in sql:
+            if detect_special_char(column_name) and column_name in sql:
                 sql = sql.replace(column_name, "`"+column_name+"`")
-    sql = sql.replace(" order ", " `order` ")
+
+    while "``" in sql:
+        sql = sql.replace("``", "`")
+
+    sql = sql.split(";")[0].strip() + ";"
+
     return sql
 
 # extract the skeleton of the input text
@@ -110,7 +116,7 @@ def prepare_cross_domain_input_seq(opt, eval_data, demonstration_set, similarity
 
     return input_seq
 
-def text2sql_func(model, text2sql_input_seq, tokenizer, max_tokens, max_new_tokens):
+def text2sql_func(model, text2sql_input_seq, tokenizer, max_tokens, max_new_tokens, eos_token_id):
     inputs = prepare_input_ids_and_attention_mask(
         tokenizer, 
         text2sql_input_seq, 
@@ -120,13 +126,16 @@ def text2sql_func(model, text2sql_input_seq, tokenizer, max_tokens, max_new_toke
 
     input_length = inputs["input_ids"].shape[1]
 
+    # check_tokenizer(tokenizer, inputs["input_ids"])
+
     with torch.no_grad():
         generate_ids = model.generate(
             **inputs,
             max_new_tokens = max_new_tokens,
             num_beams = 4,
             num_return_sequences = 4,
-            use_cache = True
+            use_cache = True,
+            eos_token_id = eos_token_id
         )
 
     generated_sqls = tokenizer.batch_decode(generate_ids[:, input_length:], skip_special_tokens = True, clean_up_tokenization_spaces = False)
@@ -152,11 +161,11 @@ if __name__ == "__main__":
     
     print("length of demonstration set:", len(demonstration_set))
     
-    if opt.sic_path is not None:
-        demonstration_set = filter_schema(demonstration_set, "train", None, 5, 5)
-        sic = SchemaItemClassifierInference(opt.sic_path)
-        eval_set = filter_schema(eval_set, "eval", sic, 5, 5)
-        del sic
+    demonstration_set = filter_schema(demonstration_set, "train", None, opt.table_num, opt.column_num)
+    sic = SchemaItemClassifierInference(opt.sic_path)
+    eval_set = filter_schema(eval_set, "eval", sic, opt.table_num, opt.column_num)
+    del sic
+    torch.cuda.empty_cache()
 
     # prepare schema sequence and content sequence for each sample
     for demonstration_sample in demonstration_set:
@@ -165,38 +174,22 @@ if __name__ == "__main__":
     for eval_sample in eval_set:
         eval_sample["schema_sequence"] = get_db_schema_sequence(eval_sample["schema"])
         eval_sample["content_sequence"] = get_matched_content_sequence(eval_sample["matched_contents"])
-    
+
     # compute similarities between questions in the evaluation set and the demonstration pool
     simsce_model = SimCSE("princeton-nlp/sup-simcse-roberta-base")
     question_similarities = simsce_model.similarity(eval_set_questions, demonstration_set_questions)
     question_skeleton_similarities = simsce_model.similarity(eval_set_question_skeletons, demonstration_set_question_skeletons)
     similarities = np.maximum(question_similarities, question_skeleton_similarities)
+    
     del simsce_model
 
-    if "starcoder" in opt.model_path: # for starcoder
-        tokenizer = AutoTokenizer.from_pretrained(opt.model_path)
-        if opt.load_in_4bit:
-            model = AutoModelForCausalLM.from_pretrained(opt.model_path, device_map = "auto", torch_dtype = torch.float16, load_in_4bit = True)
-        elif opt.load_in_8bit:
-            model = AutoModelForCausalLM.from_pretrained(opt.model_path, device_map = "auto", torch_dtype = torch.float16, load_in_8bit = True)
-        else:
-            model = AutoModelForCausalLM.from_pretrained(opt.model_path, device_map = "auto", torch_dtype = torch.float16)
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-        model.config.pad_token_id = tokenizer.eos_token_id
-    elif "codes" in opt.model_path: # for codes
-        tokenizer = AutoTokenizer.from_pretrained(opt.model_path)
-        if opt.load_in_4bit:
-            model = AutoModelForCausalLM.from_pretrained(opt.model_path, device_map = "auto", torch_dtype = torch.float16, load_in_4bit = True)
-        elif opt.load_in_8bit:
-            model = AutoModelForCausalLM.from_pretrained(opt.model_path, device_map = "auto", torch_dtype = torch.float16, load_in_8bit = True)
-        else:
-            model = AutoModelForCausalLM.from_pretrained(opt.model_path, device_map = "auto", torch_dtype = torch.float16)
-    
+    tokenizer = AutoTokenizer.from_pretrained(opt.llm_path)
+    model = AutoModelForCausalLM.from_pretrained(opt.llm_path, device_map = "auto", torch_dtype = torch.float16)
     model.eval()
     print(model.dtype)
 
     # update eos token id of the tokenizer and the model to support early stop SQL generation
-    token_ids_of_example_sql = tokenizer("SELECT * FROM table ;")["input_ids"]
+    token_ids_of_example_sql = tokenizer("SELECT * FROM tables ;")["input_ids"]
     print(token_ids_of_example_sql)
     if token_ids_of_example_sql[-1] == tokenizer.eos_token_id:
         new_eos_token_id = token_ids_of_example_sql[-2]
@@ -204,13 +197,14 @@ if __name__ == "__main__":
         new_eos_token_id = token_ids_of_example_sql[-1]
     model.config.eos_token_id = new_eos_token_id
     tokenizer.eos_token_id = new_eos_token_id
-    # print("new_eos_token_id:", new_eos_token_id)
-    # print("tokenizer.decode(new_eos_token_id): '{}'".format(tokenizer.decode(new_eos_token_id)))
-    if "codes-15b" in opt.model_path:
-        max_tokens = 6144
-    else:
-        max_tokens = 8192
-    max_new_tokens = 256
+    print("new_eos_token_id:", new_eos_token_id)
+    print("tokenizer.decode(new_eos_token_id): '{}'".format(tokenizer.decode(new_eos_token_id)))
+
+    max_tokens = opt.max_tokens
+    max_new_tokens = opt.max_new_tokens
+
+    print("max_tokens:", max_tokens)
+    print("max_new_tokens:", max_new_tokens)
 
     predicted_sqls = []
     for eval_data_idx, eval_data in tqdm(enumerate(eval_set)):
@@ -219,7 +213,7 @@ if __name__ == "__main__":
         if eval_data_idx < 2:
             print(input_seq)
         
-        generated_sqls = text2sql_func(model, input_seq, tokenizer, max_tokens, max_new_tokens)
+        generated_sqls = text2sql_func(model, input_seq, tokenizer, max_tokens, max_new_tokens, new_eos_token_id)
         generated_sqls = [post_process(generated_sql, eval_data["schema"]["schema_items"]) for generated_sql in generated_sqls]
         
         final_generated_sql = None
@@ -238,15 +232,31 @@ if __name__ == "__main__":
         print(final_generated_sql)
         predicted_sqls.append(final_generated_sql)
 
-    with open("pred_sqls.txt", "w", encoding = 'utf-8') as f:
-        for sql in predicted_sqls:
-            f.write(sql + "\n")
-
-    print("LLM name:", opt.model_path)
+    print("LLM name:", opt.llm_path)
     if "bird" in opt.dataset_path:
-        os.system('sh bird_evaluation/run_evaluation.sh')
-    elif "spider" in opt.dataset_path:
+        bird_results_dict = dict()
+        for idx, (data, predicted_sql) in enumerate(zip(eval_set, predicted_sqls)):
+            bird_results_dict[idx] = predicted_sql + "\t----- bird -----\t" + data["db_id"]
+        with open("predict_dev.json", "w", encoding = 'utf-8') as f:
+            f.write(json.dumps(bird_results_dict, indent = 2, ensure_ascii = False))
+        os.system("sh bird_evaluation/run_evaluation.sh {}".format("predict_dev.json"))
+    elif "spider_dev" in opt.dataset_path:
+        with open("pred_sqls.txt", "w", encoding = 'utf-8') as f:
+            for sql in predicted_sqls:
+                f.write(sql + "\n")
         print("Execution accuracy:")
         os.system('python -u test_suite_sql_eval/evaluation.py --gold ./data/sft_data_collections/spider/dev_gold.sql --pred pred_sqls.txt --db ./data/sft_data_collections/spider/database --etype exec')
         print("Test suit execution accuracy:")
         os.system('python -u test_suite_sql_eval/evaluation.py --gold ./data/sft_data_collections/spider/dev_gold.sql --pred pred_sqls.txt --db test_suite_sql_eval/test_suite_database --etype exec')
+    elif "bank" in opt.dataset_path:
+        with open("pred_sqls.txt", "w", encoding = 'utf-8') as f:
+            for sql in predicted_sqls:
+                f.write(sql + "\n")
+        print("Execution accuracy:")
+        os.system('python -u evaluate_ex.py --pred pred_sqls.txt --gold {} --db ./data/sft_data_collections/domain_datasets/databases/Bank_Financials/Bank_Financials.sqlite'.format(opt.dataset_path))
+    elif "aminer" in opt.dataset_path:
+        with open("pred_sqls.txt", "w", encoding = 'utf-8') as f:
+            for sql in predicted_sqls:
+                f.write(sql + "\n")
+        print("Execution accuracy:")
+        os.system('python -u evaluate_ex.py --pred pred_sqls.txt --gold {} --db ./data/sft_data_collections/domain_datasets/databases/Aminer_Simplified/Aminer_Simplified.sqlite'.format(opt.dataset_path))

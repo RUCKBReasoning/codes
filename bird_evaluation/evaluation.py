@@ -25,6 +25,13 @@ def execute_sql(predicted_sql,ground_truth, db_path):
     res = 0
     if set(predicted_res) == set(ground_truth_res):
         res = 1
+    
+    # if res == 0 and len(str(predicted_res)) == len(str(ground_truth_res)):
+    #     print(predicted_sql)
+    #     print(ground_truth)
+    #     print(predicted_res)
+    #     print(ground_truth_res)
+    #     print("-------------------")
     return res
 
 
@@ -57,7 +64,7 @@ def package_sqls(sql_path, db_root_path, mode='gpt', data_mode='dev'):
     clean_sqls = []
     db_path_list = []
     if mode == 'gpt':
-        sql_data = json.load(open(sql_path + 'predict_' + data_mode + '.json', 'r'))
+        sql_data = json.load(open(sql_path, 'r'))
         for idx, sql_str in sql_data.items():
             if type(sql_str) == str:
                 sql, db_name = sql_str.split('\t----- bird -----\t')
@@ -147,6 +154,9 @@ if __name__ == '__main__':
     query_pairs = list(zip(pred_queries,gt_queries))
     run_sqls_parallel(query_pairs, db_places=db_paths, num_cpus=args.num_cpus, meta_time_out=args.meta_time_out)
     exec_result = sort_results(exec_result)
+    
+    # with open("exec_result.json", "w", encoding="utf-8") as f:
+    #     f.write(json.dumps(exec_result, indent=2, ensure_ascii=False))
     
     print('start calculate')
     simple_acc, moderate_acc, challenging_acc, acc, count_lists = \

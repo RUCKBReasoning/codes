@@ -35,7 +35,8 @@ def check_sql_executability(generated_sql, db):
         return "Error: empty string"
     try:
         cursor = get_cursor_from_path(db)
-        execute_sql(cursor, generated_sql)
+        # use `EXPLAIN QUERY PLAN` to avoid actually executing
+        execute_sql(cursor, "EXPLAIN QUERY PLAN " + generated_sql)
         execution_error = None
     except FunctionTimedOut as fto:
         print("SQL execution time out error: {}.".format(fto))
@@ -78,9 +79,9 @@ def get_db_schema_sequence(schema):
         table_name, table_comment = table["table_name"], table["table_comment"]
         if detect_special_char(table_name):
             table_name = add_quotation_mark(table_name)
-
-        if table_comment != "":
-            table_name += " ( comment : " + table_comment + " )"
+        
+        # if table_comment != "":
+        #     table_name += " ( comment : " + table_comment + " )"
 
         column_info_list = []
         for column_name, column_type, column_comment, column_content, pk_indicator in \
@@ -96,14 +97,14 @@ def get_db_schema_sequence(schema):
             # column comment
             if column_comment != "":
                 additional_column_info.append("comment : " + column_comment)
-            # column content
+            # representive column values
             if len(column_content) != 0:
                 additional_column_info.append("values : " + " , ".join(column_content))
-
+            
             column_info_list.append(table_name + "." + column_name + " ( " + " | ".join(additional_column_info) + " )")
-
+        
         schema_sequence += "table "+ table_name + " , columns = [ " + " , ".join(column_info_list) + " ]\n"
-    
+
     if len(schema["foreign_keys"]) != 0:
         schema_sequence += "foreign keys :\n"
         for foreign_key in schema["foreign_keys"]:

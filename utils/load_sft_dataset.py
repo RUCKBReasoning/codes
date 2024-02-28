@@ -1,6 +1,8 @@
 import json
 import torch
+import gc
 
+from datasets import Dataset
 from torch.utils.data import Dataset
 from schema_item_filter import SchemaItemClassifierInference, filter_schema
 from utils.db_utils import get_db_schema_sequence, get_matched_content_sequence
@@ -40,11 +42,9 @@ def prepare_inputs_and_labels(prefix_seq, target_seq, tokenizer, max_tokens):
     }
 
 def prepare_inputs(prefix_seq, tokenizer, max_prefix_length):
-    input_ids = tokenizer(prefix_seq , truncation = False)["input_ids"]
+    input_ids = [tokenizer.bos_token_id] + tokenizer(prefix_seq , truncation = False)["input_ids"]
 
-    if len(input_ids) <= max_prefix_length:
-        input_ids = input_ids
-    else:
+    if len(input_ids) > max_prefix_length:
         print("the current input sequence exceeds the max_tokens, we will truncate it.")
         input_ids = [tokenizer.bos_token_id] + input_ids[-(max_prefix_length-1):]
     
@@ -56,17 +56,18 @@ def prepare_inputs(prefix_seq, tokenizer, max_prefix_length):
     }
 
 class SFTSQLGenerationDataset(Dataset):
-    def __init__(self, text2sql_data_dir, tokenizer, max_tokens, mode, sic_path):
+    def __init__(self, text2sql_data_dir, tokenizer, max_tokens, mode, table_num, column_num, sic_path):
         super().__init__()
         dataset = json.load(open(text2sql_data_dir))
 
-        if sic_path is not None:
-            print("apply filtering strategies...")
-            if mode == "train":
-                dataset = filter_schema(dataset, "train", None, 5, 5)
-            elif mode == "eval":
-                sic = SchemaItemClassifierInference(sic_path)
-                dataset = filter_schema(dataset, "eval", sic, 5, 5)
+        print("apply filtering strategies...")
+        if mode == "train":
+            dataset = filter_schema(dataset, "train", None, table_num, column_num)
+        elif mode == "eval":
+            sic = SchemaItemClassifierInference(sic_path)
+            dataset = filter_schema(dataset, "eval", sic, table_num, column_num)
+            del sic
+            torch.cuda.empty_cache()
 
         # prepare schema sequence and content sequence
         for data in dataset:
@@ -81,6 +82,8 @@ class SFTSQLGenerationDataset(Dataset):
     def __getitem__(self, index):
         data = self.dataset[index]
         prefix_seq = prepare_text2sql_prefix_sequence(data)
+        if index < 2:
+            print(prefix_seq)
 
         if self.mode == "train":
             target_seq = data["sql"]

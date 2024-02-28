@@ -243,6 +243,13 @@ def filter_schema(dataset, dataset_type, sic, num_top_k_tables = 5, num_top_k_co
 
     return dataset
 
+def lista_contains_listb(lista, listb):
+    for b in listb:
+        if b not in lista:
+            return 0
+    
+    return 1
+
 class SchemaItemClassifierInference():
     def __init__(self, model_save_path):
         set_seed(42)
@@ -300,9 +307,52 @@ class SchemaItemClassifierInference():
         
         return merge_pred_results(test_sample, pred_results)
     
-if __name__ == "__main__":
-    sic = SchemaItemClassifierInference(0, "ckpts/schema_item_classifier")
-    import json
-    dataset = json.load(open("./data/sft_eval.json"))
+    def evaluate_coverage(self, dataset):
+        max_k = 100
+        total_num_for_table_coverage, total_num_for_column_coverage = 0, 0
+        table_coverage_results = [0]*max_k
+        column_coverage_results = [0]*max_k
+
+        for data in dataset:
+            indices_of_used_tables = [idx for idx, label in enumerate(data["table_labels"]) if label == 1]
+            pred_results = sic.predict(data)
+            # print(pred_results)
+            table_probs = [res["table_prob"] for res in pred_results]
+            for k in range(max_k):
+                indices_of_top_k_tables = np.argsort(-np.array(table_probs), kind="stable")[:k+1].tolist()
+                if lista_contains_listb(indices_of_top_k_tables, indices_of_used_tables):
+                    table_coverage_results[k] += 1
+            total_num_for_table_coverage += 1
+
+            for table_idx in range(len(data["table_labels"])):
+                indices_of_used_columns = [idx for idx, label in enumerate(data["column_labels"][table_idx]) if label == 1]
+                if len(indices_of_used_columns) == 0:
+                    continue
+                column_probs = pred_results[table_idx]["column_probs"]
+                for k in range(max_k):
+                    indices_of_top_k_columns = np.argsort(-np.array(column_probs), kind="stable")[:k+1].tolist()
+                    if lista_contains_listb(indices_of_top_k_columns, indices_of_used_columns):
+                        column_coverage_results[k] += 1
+
+                total_num_for_column_coverage += 1
+
+                indices_of_top_10_columns = np.argsort(-np.array(column_probs), kind="stable")[:10].tolist()
+                if lista_contains_listb(indices_of_top_10_columns, indices_of_used_columns) == 0:
+                    print(pred_results[table_idx])
+                    print(data["column_labels"][table_idx])
+                    print(data["question"])
+
+        print(total_num_for_table_coverage)
+        print(table_coverage_results)
+        print(total_num_for_column_coverage)
+        print(column_coverage_results)
     
-    print(sic.predict(dataset[0]))
+if __name__ == "__main__":
+    dataset_name = "bird_with_evidence"
+    # dataset_name = "bird"
+    # dataset_name = "spider"
+    sic = SchemaItemClassifierInference("sic_ckpts/sic_{}".format(dataset_name))
+    import json
+    dataset = json.load(open("./data/sft_eval_{}_text2sql.json".format(dataset_name)))
+    
+    sic.evaluate_coverage(dataset)
