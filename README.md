@@ -110,7 +110,7 @@ Do you wish to use FP16 or BF16 (mixed precision)?
 bf16                                             
 ```
 
-We’re equipped with 8 GPUs for our training processes, each capable of handling a batch size of 4. Additionally, we’ve configured the gradient accumulation steps to 4, culminating in a global batch size of $8*4*4=128$.
+We’re equipped with 8 GPUs for our training processes, each capable of handling a batch size of 4. Additionally, we’ve configured the gradient accumulation steps to 4, culminating in a global batch size of $8 \times 4 \times 4=128$.
 
 Should your GPUs be compatible with Flash-Attention (further details available at [flash-attention](https://github.com/Dao-AILab/flash-attention)), activating this feature can further reduce the GPU memory usage during training. To leverage Flash-Attention, we offer two approaches: **Modifying the source code within the transformers package** or **Installing the latest version of the transformers package**.
 
