@@ -104,6 +104,13 @@ def checkpoint_model(accelerator, model, tokenizer, output_ckpt_dir, last_global
     
     return
 
+def sanity_check(input, target, tokenizer):
+    print("Start Sanity Check -------->")
+    for t, m in zip(input[:-1], target[1:]):
+        decoded = tokenizer.decode([t])
+        print("%20s: %6d -> %6d" % (repr(decoded), t, m))
+    print("<-------- End Sanity Check")
+
 def train(opt):
     set_seed(opt.seed)
 
@@ -129,6 +136,8 @@ def train(opt):
 
     if opt.mode == "pt":
         dataset = PretrainDataset(opt.pt_data_dir, opt.block_size)
+        if accelerator.is_main_process:
+            sanity_check(dataset[0]["input_ids"], dataset[0]["labels"], tokenizer)
     elif opt.mode == "sft":
         dataset = SFTSQLGenerationDataset(opt.text2sql_data_dir, tokenizer, opt.block_size, "train", opt.table_num, opt.column_num, None)
     else:

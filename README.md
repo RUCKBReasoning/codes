@@ -143,6 +143,20 @@ This method simplifies the process by utilizing the in-built support for Flash-A
 
 *However, during our experimentation, we observed that the most recent version of the transformers package can yield inference outcomes that marginally deviate from those obtained with the version utilized in this project.* Consequently, we suggest opting for the first method or establishing a new Anaconda environment specifically for installing the latest transformers package.
 
+## Incremental Pre-training
+To begin pre-training CodeS with our released corpus, please adhere to the instructions provided below:
+
+Initially, ensure that you have sufficient computational resources available, as pre-training is resource-consuming and time-consuming.
+
+Then, download our collected corpus from [pre-training-corpus](https://drive.google.com/file/d/1UVkwQU9pYWU_-hhQIpgH8xWpLAqm1StX/view?usp=sharing) and unzip it.
+
+Next, execute the following script to tokenize the corpus:
+```
+python -u tokenize_pt_corpus.py
+```
+
+Lastly, the `pre_train.sh` file contains exmaple commands for launching the pre-training process. You simply need to adjust the `per_device_train_batch_size` and configure the Accelerate settings to suit your hardware environment. This step is essential to achieve a global batch size that includes exactly 4,194,304 tokens.
+
 ## License
 The code and model weights are open-sourced under the Apache-2.0 license.
 
