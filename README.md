@@ -6,6 +6,8 @@ CodeS series have demonstrated outstanding performance on many challenging text-
 
 Utilizing CodeS, we have launched a text-to-SQL demo. You can access it at [RUCKBReasoning/text2sql-demo](https://github.com/RUCKBReasoning/text2sql-demo). Feel free to explore and follow the provided instructions to customize your own text-to-SQL demo!
 
+`Update (2024.4.19):` We are excited to announce the release of our newly developed schema filter, boasting 3 billion parameters and offering bilingual support for both Chinese and English. This tool is now available as an independent component and can be accessed at [text2sql-schema-filter](https://github.com/RUCKBReasoning/text2sql-schema-filter). If you're looking to enhance your text-to-SQL system with a schema filter, we encourage you to give it a try. 
+
 ## Reproduce our results
 Reproducing our results is straightforward using the checkpoints and scripts we have supplied.
 
