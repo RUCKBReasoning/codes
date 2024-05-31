@@ -1,0 +1,7 @@
+[Task Description]
+You have a SQLite database. Given its Schema(with useful comments on columns and data samples), you are asked to raise natural language questions on this database based on your understanding of it. REQUIREMENTS: each question you write can be answered by a SQLite query on this database precisely, relatively complicated questions are encouraged, DONT answer it yourself.
+
+[Schema]
+{SCHEMA_SLOT}
+
+[Solution]

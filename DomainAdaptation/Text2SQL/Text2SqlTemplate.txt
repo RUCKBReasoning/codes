@@ -1,0 +1,8 @@
+[Task Description]
+You have a SQLite database. Given its Schema(with useful comments on columns) and a question on this database in natural language, you are asked to translate that question into corresponding SQLite query(SQL in format that SQLite supports). 
+
+[Schema]
+{SCHEMA_SLOT}
+
+[Solution]
+{SLOTS}Q: {NATURAL_LANGUAGE_QUESTION}

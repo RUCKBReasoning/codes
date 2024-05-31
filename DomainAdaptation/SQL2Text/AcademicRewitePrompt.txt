@@ -1,0 +1,59 @@
+[Task Description]
+You have a SQLite database. Based on the Schema(with useful comments on columns), you generated plentiful question-query pairs with template, whose readability is terrible. Now, given a question-query pair, you are asked to rewrite the question to enhance its readability with the help of comments in Schema.
+
+[Schema]
+{SCHEMA_SLOT}
+
+[Solution]
+
+Q: {How many distinct position are there with tag is high resolution?}
+{SELECT COUNT(DISTINCT Author.position) FROM Author JOIN Researcher_Interests ON Author.id = Researcher_Interests.author_id WHERE Researcher_Interests.tag = "high resolution"}
+A: {how may different academic positions are there in researchers who have an interest in "high resolution"?}
+
+Q: {Find all rank and n_citation for the records whose rank is smaller than 3.}
+{SELECT Paper_Authors.rank , Paper.n_citation FROM Author JOIN Paper_Authors ON Author.id = Paper_Authors.author_id JOIN Paper ON Paper_Authors.paper_id = Paper.id WHERE Paper_Authors.rank < 3}
+A: {query a combination of order of authors and number of citaion of the paper with author rank below 3.}
+
+Q: {What is the page_end of the records with a keyword of 'electric vehicle' or 'Renmin Univ'?}
+{SELECT Paper.page_end FROM Paper JOIN Paper_Keywords ON Paper.id = Paper_Keywords.paper_id WHERE Paper_Keywords.keyword = 'electric vehicle' OR Paper_Keywords.keyword = 'Renmin Univ'}
+A: {For papers having keyword 'electric vehicle' or 'Renmin Univ', what are theirs end page on the publicaiton?}
+
+Q: {what are the type that have 8 or more records?}
+{SELECT Affiliation.type FROM Affiliation GROUP BY Affiliation.type HAVING COUNT (*) >= 8}
+A: {what type of orgnization have no less than eight records in affiliation table?}
+
+Q: {Find the number of records with a h_index of more than 1 for each affiliation_name}
+{SELECT count(*) , Orgnization_Researchers.affiliation_name FROM Author JOIN Orgnization_Researchers ON Author.id = Orgnization_Researchers.author_id WHERE Author.h_index > 1 GROUP BY Orgnization_Researchers.affiliation_name}
+A: {for each affiliation, how many researchers whose h_index greater than 1 belongs to it?}
+
+Q: {show the keyword and the total n_citation of records.}
+{SELECT Paper_Keywords.keyword , SUM (Paper.n_citation) FROM Paper JOIN Paper_Keywords ON Paper.id = Paper_Keywords.paper_id GROUP BY Paper_Keywords.keyword}
+A: {for every keyword, calculate the sum of citaion across the papers having this keyword.}
+
+Q: {Show DisplayName of any records in which pdf equals //static.aminer.org/pdf/PDF/001/011/809/.pdf}
+{SELECT Venue.DisplayName FROM Paper JOIN Venue_Papers ON Paper.id = Venue_Papers.paper_id JOIN Venue ON Venue_Papers.venue_id = Venue.id WHERE Paper.pdf = '//static.aminer.org/pdf/PDF/001/011/809/.pdf'}
+A: {give me name of the conferenece if anyone of its paper have pdf link same as //static.aminer.org/pdf/PDF/001/011/809/.pdf}
+
+Q: {List the h_index and tag of the records ordered alphabetically by tag}
+{SELECT Author.h_index , Researcher_Interests.tag FROM Author JOIN Researcher_Interests ON Author.id = Researcher_Interests.author_id ORDER BY Researcher_Interests.tag}
+A: {i want to know h-index and research interest of every researcher, list them by tag in alphabetically order}
+
+Q: {Report all information about records with h_index between 3 and 6 for which affiliation_name is M. D. Anderson Cancer Center, Houston, TX.}
+{SELECT * FROM Author JOIN Orgnization_Researchers ON Author.id = Orgnization_Researchers.author_id JOIN Affiliation ON Orgnization_Researchers.affiliation_name = Affiliation.DisplayName WHERE Author.h_index BETWEEN 3 AND 6 AND Orgnization_Researchers.affiliation_name = \"M. D. Anderson Cancer Center, Houston, TX\"}
+A: {report all the researcher that belongs to 'M. D. Anderson Cancer Center, Houston, TX.' and have a h-index between 3 and 6.}
+
+Q: {please show the url of the Affiliation dataframe that have at least 7 records.}
+{SELECT Affiliation.url FROM Affiliation GROUP BY Affiliation.url HAVING COUNT (*) >= 7}
+A: {Find orgnizations who appered at least 7 times, and show me their homepage links.}
+
+Q: {What are the DisplayName of records published before 1990?}
+{SELECT Venue.DisplayName FROM Paper JOIN Venue_Papers ON Paper.id = Venue_Papers.paper_id JOIN Venue ON Venue_Papers.venue_id = Venue.id WHERE Paper.year < 1990}
+A: {what are the names of venue that have papers published before 1990?}
+
+Q: {Find n_citation and keyword of the top 3 n_citation.}
+{SELECT Paper.n_citation , Paper_Keywords.keyword FROM Paper JOIN Paper_Keywords ON Paper.id = Paper_Keywords.paper_id ORDER BY Paper.n_citation DESC LIMIT 3}
+A: {Find the top 3 papers in terms of number of citaion, return the number and their keywords.}
+
+Q: {NATURAL_LANGUAGE_QUESTION}
+{SQL_QUERY}
+A:

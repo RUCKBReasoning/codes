@@ -1,0 +1,721 @@
+[
+    {
+        "question": [
+            "what is the {COLUMN} from the {TABLE} table with least number of {COLUMN}?",
+            "return the {COLUMN} of the table {TABLE} that has the fewest corresponding {COLUMN}.",
+            "return the different {COLUMN} in {TABLE} information, in ascending order of frequency.",
+            "what are the {COLUMN} of table {TABLE}, sorted by their frequency and return the least frequent one?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} ORDER BY COUNT (*) ASC LIMIT 1",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "find all entries of {COLUMN} from table {TABLE}.",
+            "select all {COLUMN} in {TABLE} table.",
+            "return records of {COLUMN} in table {TABLE} as a list."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE}",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "how many {COLUMN} did each {TABLE} do, ordered by number of {COLUMN}?",
+            "show the {COLUMN} and the corresponding number of {TABLE} sorted by the number of {COLUMN} in ascending order.",
+            "return each {COLUMN} with the number of {TABLE} in ascending order of the number of {COLUMN}.",
+            "how many {TABLE} correspond to each {COLUMN}? show the result in ascending order.",
+            "show the {COLUMN} and the number of {TABLE} for each {COLUMN} in the ascending order.",
+            "show all {COLUMN} and corresponding number of {TABLE} in the ascending order of the numbers.",
+            "how many {TABLE} are there for each {COLUMN}? list the smallest count first.",
+            "show all {COLUMN} and corresponding number of {TABLE} sorted by the count.",
+            "how many {TABLE} does each {COLUMN} have?"
+        ],
+        "query": "SELECT {COLUMN} , COUNT (*) FROM {TABLE} GROUP BY {COLUMN} ORDER BY COUNT (*)",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "show all information on the {TABLE} that has the largest {COLUMN}.",
+            "what is all the information on the {TABLE} with the largest {COLUMN}?"
+        ],
+        "query": "SELECT * FROM {TABLE} ORDER BY {COLUMN} DESC LIMIT 1",
+        "type": ["NUMBER"]
+    },
+    {
+        "question": [
+            "what are the maximum and minimum {COLUMN} across all {TABLE}?",
+            "return the maximum and minimum {COLUMN} across all {TABLE}.",
+            "what is the maximum and mininum {COLUMN} for all {TABLE}?",
+            "give the maximum and minimum {COLUMN} of all {TABLE}."
+        ],
+        "query": "SELECT MAX ({COLUMN}) , MIN ({COLUMN}) FROM {TABLE}",
+        "type": ["NUMBER"]
+    },
+    {
+        "question": [
+            "what are the maximum, minimum and average {COLUMN} across all {TABLE}?",
+            "return the maximum, minimum and average {COLUMN} across all {TABLE}.",
+            "what is the maximum, mininum and mean {COLUMN} for all {TABLE}?",
+            "give the maximum, minimum and mean {COLUMN} of all {TABLE}."
+        ],
+        "query": "SELECT MAX ({COLUMN}) , MIN ({COLUMN}), AVG ({COLUMN}) FROM {TABLE}",
+        "type": ["NUMBER"]
+    },
+    {
+        "question": [
+            "what are the average {COLUMN}, minimum {COLUMN2} and minimum {COLUMN3} across all {TABLE}?",
+            "return the average {COLUMN}, minimum {COLUMN2} and minimum {COLUMN3} across all {TABLE}.",
+            "what are the average {COLUMN}, mininum {COLUMN2} and minimum {COLUMN3} for all {TABLE}?",
+            "give the average {COLUMN}, minimum {COLUMN2} and minimum {COLUMN3} of all {TABLE}."
+        ],
+        "query": "SELECT AVG ({COLUMN}) , MIN ({COLUMN2}), MIN ({COLUMN3}) FROM {TABLE}",
+        "type": ["NUMBER", "NUMBER", "NUMBER"]
+    },
+    {
+        "question": [
+            "how many records have {COLUMN} that equals to {VALUE_INT}?",
+            "count the number of records that have an {COLUMN} same as {VALUE_INT}.",
+            "how many records have {COLUMN} that contain the value {VALUE_INT}?",
+            "find the number of records whose {COLUMN} is {VALUE_INT}.",
+            "how many {COLUMN} in {TABLE} table have the value {VALUE_INT}?"
+        ],
+        "query": "SELECT COUNT (*) FROM {TABLE} WHERE {COLUMN} = {VALUE_INT}", 
+        "type": ["NUMBER"],
+        "value_int":["0"]
+    },
+    {
+        "question": [
+            "please show the {COLUMN} of the {TABLE} dataframe that have at least {VALUE_INT} records.",
+            "what are the {COLUMN} that have {VALUE_INT} or more records?",
+            "show the {COLUMN} who have at least {VALUE_INT} from."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING COUNT (*) >= {VALUE_INT}",
+        "type": ["ANY"],
+        "value_int": ["COUNT"]
+    },
+    {
+        "question": [
+            "list {COLUMN} that have the number of records greater than {VALUE_INT}.",
+            "list the {COLUMN} which has number of emergence greater than {VALUE_INT}.",
+            "find the {COLUMN} of form {TABLE} who have more than {VALUE_INT} replication.",
+            "show the {COLUMN} shared by more than {VALUE_INT} records.",
+            "please show the {COLUMN} from the {TABLE} with count more than {VALUE_INT}."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING COUNT (*) > {VALUE_INT}",
+        "type": ["ANY"],
+        "value_int": ["COUNT"]
+    },
+    {
+        "question": [
+            "show the {COLUMN} that has the greatest number of records.",
+            "show the {COLUMN} that has the most replication.",
+            "find the {COLUMN} from the {TABLE} that is most frequent across all {COLUMN}.",
+            "find the {COLUMN} of {TABLE} who has the largest number of {TABLE}.",
+            "what is the {COLUMN} of the {TABLE} who has the highest number of {TABLE}?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} ORDER BY COUNT (*) DESC LIMIT 1",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "what are the {COLUMN} of the {TABLE} that have exactly {VALUE_INT}?",
+            "find the {COLUMN} of the {TABLE} that have just {VALUE_INT}.",
+            "find the {COLUMN} that is {VALUE_INT}.",
+            "find the {COLUMN} who has exactly {VALUE_INT}.",
+            "find the {COLUMN} which have exactly {VALUE_INT}.",
+            "what are the {COLUMN} with exactly {VALUE_INT}?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING COUNT (*) = {VALUE_INT}",
+        "type": ["ANY"],
+        "value_int": ["COUNT"]
+    },
+    {
+        "question": [
+            "find all {COLUMN} that have fewer occurance than {VALUE_INT} in {TABLE}.",
+            "which {COLUMN} have less than {VALUE_INT} appearance in {TABLE}?",
+            "show the {COLUMN} with showing up fewer than {VALUE_INT} times."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING COUNT (*) < {VALUE_INT}",
+        "type": ["ANY"],
+        "value_int": ["COUNT"]
+    },
+    {
+        "question": [
+            "what is the {COLUMN} of {TABLE} that has fewest number of appearance?",
+            "which {COLUMN} has the smallest amount of records?",
+            "which {COLUMN} has the fewest records?",
+            "which {COLUMN} has least number of records?",
+            "give the {COLUMN} with the fewest records."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} ORDER BY COUNT (*) LIMIT 1",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "list all information about {TABLE}.",
+            "Show everything on {TABLE}",
+            "Return all columns in {TABLE}.",
+            "find all info about {TABLE}",
+            "display all information from {TABLE}"
+        ],
+        "query": "SELECT * FROM {TABLE}",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "show the five {COLUMN} of the {TABLE} that has the greatest number of occurance.",
+            "show the 5 {COLUMN} of the {TABLE} that has the most records.",
+            "what is the five {COLUMN} the most common in all {COLUMN}?",
+            "find the 5 {COLUMN} of the {TABLE} that is most frequent across all {COLUMN}.",
+            "find the five {COLUMN} of the {TABLE} who has the largest number of records.",
+            "what is the 5 {COLUMN} of the {TABLE} who has the highest number of records?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} ORDER BY COUNT (*) DESC LIMIT 5",
+        "type": ["ANY"]
+    },
+    {
+        "question": ["what is the 8 smallest {COLUMN} from {TABLE}?",
+            "return the eight lowest {COLUMN} in {TABLE}.",
+            "find the 8 smallest value of {COLUMN} from {TABLE}.",
+            "what is the 8 lowest {COLUMN} of the {TABLE} table?",
+            "what is the eight {COLUMN} of the {TABLE} with least number of {COLUMN}?",
+            "return the 8 {COLUMN} of the {TABLE} that has the fewest corresponding {COLUMN}.",
+            "return 8 different {COLUMN} of {TABLE}, in ascending order of frequency.",
+            "what are the eight smallest {COLUMN} of {TABLE}, sorted by their frequency?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} ORDER BY COUNT (*) ASC LIMIT 8",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "Count the number of {COLUMN} in the table {TABLE} with \"{VALUE_STR}\" result.",
+            "How many records have a {COLUMN} with \"{VALUE_STR}\" as value?",
+            "Return the number of {COLUMN} with content \"{VALUE_STR}\"."
+        ],
+        "query": "SELECT count(*) FROM {TABLE} WHERE {COLUMN} = \"{VALUE_STR}\"",
+        "type": ["TEXT"],
+        "value_str": ["0"]
+    },
+    {
+        "question": [
+            "Find the {COLUMN} that has the largest numbers of members.",
+            "Return {COLUMN} with the largest amount of records.",
+            "What is the {COLUMN} with most records?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} ORDER BY count(*) DESC LIMIT 1",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "Show {COLUMN} and the amount of them in each {COLUMN}.",
+            "Show {COLUMN} and for each {COLUMN} how much records they have.",
+            "Return {COLUMN} and find the number of appearance in each of them."
+        ],
+        "query": "SELECT {COLUMN} , count(*) FROM {TABLE} GROUP BY {COLUMN}",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "Please list {COLUMN} in {TABLE} where {COLUMN2} is an empty string.",
+            "find {COLUMN} of {TABLE} where {COLUMN2} has an empty value.",
+            "what are the {COLUMN} from {TABLE} where {COLUMN2} does not have any character?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} = ''",
+        "type": ["ANY", "TEXT"]
+    },
+    {
+        "question": [
+            "return the 2 {COLUMN} of the largest {COLUMN2}.",
+            "find two {COLUMN} of the {TABLE} with the largest {COLUMN2}.",
+            "what are the two {COLUMN} of highest {COLUMN2}?",
+            "find the 2 {COLUMN} of the {TABLE} with the highest {COLUMN2}.",
+            "what are the two best {COLUMN} in {TABLE}?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} ORDER BY {COLUMN2} DESC LIMIT 2",
+        "type": ["ANY", "NUMBER"]
+    },
+    {
+        "question": [
+            "what are all the {COLUMN} and {COLUMN2}?",
+            "what are the {COLUMN} and {COLUMN2} ?",
+            "show {COLUMN} and {COLUMN2} of {TABLE}  .",
+            "what are the {COLUMN} and {COLUMN2} of each {TABLE} ?"
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE}",
+        "type": ["ANY", "ANY"]
+    },
+    {
+        "question": [
+            "show the {COLUMN} and the total {COLUMN2} of {TABLE}.",
+            "what are total {COLUMN2} for each {COLUMN}?",
+            "show all {COLUMN} and the total {COLUMN2} for each.",
+            "what are the {COLUMN} for all records in {TABLE} , and what is the total {{COLUMN2} for each?",
+            "show the {COLUMN} and their total {COLUMN2} from table {TABLE} .",
+            "what are the {{COLUMN} of all the records in {TABLE}, and the total {COLUMN2} by each?"
+        ],
+        "query": "SELECT {COLUMN} , SUM ({COLUMN2}) FROM {TABLE} GROUP BY {COLUMN}",
+        "type": ["ANY", "NUMBER"]
+    },
+    {
+        "question": [
+            "show the {COLUMN} and the number of unique {COLUMN2} containing each {COLUMN}.",
+            "how many distinct {COLUMN2} correspond to each {COLUMN}?",
+            "show {COLUMN} and the number of distinct {COLUMN2} in each {COLUMN}.",
+            "how many different {COLUMN2} correspond to each {COLUMN}?"
+        ],
+        "query": "SELECT {COLUMN} , COUNT (DISTINCT {COLUMN2}) FROM {TABLE} GROUP BY {COLUMN}",
+        "type": ["ANY", "ANY"]
+    },
+    {
+        "question": [
+            "select the average {COLUMN} of each {TABLE}'s {COLUMN2}.",
+            "what are the average {COLUMN} of {TABLE}, grouped by {COLUMN2}?",
+            "what are the average {COLUMN} of {TABLE} for different {COLUMN2}?"
+        ],
+        "query": "SELECT AVG ({COLUMN}) , {COLUMN2} FROM {TABLE} GROUP BY {COLUMN2}",
+        "type": ["NUMBER", "ANY"]
+    },
+    {
+        "question": [
+            "return the smallest {COLUMN} for every {COLUMN2}.",
+            "what is the minimum {COLUMN} in each {COLUMN2}?",
+            "what is the smallest {COLUMN} for each {COLUMN2}?"
+        ],
+        "query": "SELECT MIN ({COLUMN}) , {COLUMN2} FROM {TABLE} GROUP BY {COLUMN2}",
+        "type": ["NUMBER", "ANY"]
+    },
+    {
+        "question": [
+            "What is the average {COLUMN} of {TABLE} grouped by {COLUMN2}?",
+            "Return the average {COLUMN} of a {TABLE} grouped by {COLUMN2}"
+        ],
+        "query": "SELECT avg({COLUMN}) , {COLUMN2} FROM {TABLE} GROUP BY {COLUMN2}",
+        "type": ["NUMBER", "ANY"]
+    },
+    {
+        "question": [
+            "List the {COLUMN} of {TABLE} ordered by {COLUMN2} in descending order",
+            "Select {COLUMN} from {TABLE} in descending order sorted by {COLUMN2}"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} ORDER BY {COLUMN2} DESC",
+        "type": ["ANY", "NUMBER"]
+    },
+    {
+        "question": [
+            "What is the {COLUMN} value that has the most occurance?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} ORDER BY count(*) DESC LIMIT 1",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "What is the {COLUMN2} and {COLUMN} of the {TABLE} with the top 5 {COLUMN}?",
+            "Show {COLUMN} and {COLUMN2} of the five records with highest {COLUMN} in {TABLE}.",
+            "Return {COLUMN} and {COLUMN2} of the 5 {TABLE} records with the largest {COLUMN} value."
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} ORDER BY {COLUMN} DESC LIMIT 5",
+        "type": ["NUMBER", "ANY"]
+    },
+    {
+        "question": [
+            "What are the {COLUMN} of {TABLE} with the top 3 largest {COLUMN2}?",
+            "Select the three {COLUMN} with the biggest {COLUMN2} from {TABLE}",
+            "What are the 3 {COLUMN} in {TABLE} with highest values of {COLUMN2}"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} ORDER BY {COLUMN2} DESC LIMIT 3",
+        "type": ["ANY", "NUMBER"]
+    },
+    {
+        "question": [
+            "List {COLUMN} of all data in {TABLE} where {COLUMN2} is {VALUE_INT} or less in descending alphabetical order.",
+            "Which {COLUMN} in {TABLE} exist for {COLUMN2} smaller than or equal to {VALUE_INT} given in descending order?",
+            "Show {COLUMN} for all records from {TABLE} where {COLUMN2} is a value less than or equal to {VALUE_INT}, given in descending alphabetical order."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} <= {VALUE_INT} ORDER BY {COLUMN} DESC",
+        "type": ["TEXT", "NUMBER"],
+        "value_int": ["1"]
+    },
+    {
+        "question": [
+            "What are the {COLUMN} of {TABLE} published before 1990?",
+            "Return the {COLUMN} of any {TABLE} from before 1990."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} < 1990",
+        "type": ["ANY", "YEAR"]
+    },
+    {
+        "question": [
+            "Give the distinct {COLUMN} for all records in {TABLE} in the database.",
+            "Retrieve all records with distinct values of {COLUMN}.",
+            "Return distinct {COLUMNS}s from {TABLE}."
+        ],
+        "query": "SELECT distinct({COLUMN}) FROM {TABLE}",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "What are the {COLUMN} that have 5 or more records?",
+            "Which {COLUMN} have at least 5 records?",
+            "Return {COLUMN} that have five or above records?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING count(*) >= 5",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "For each {COLUMN}, report the {COLUMN}, the number of {COLUMN2} and the total number of records in {TABLE} with that {COLUMN}.",
+            "For every {COLUMN} in {TABLE}, return the {COLUMN}, its number of distinct {COLUMN2} as well as the total count of {TABLE} within that group."
+        ],
+        "query": "SELECT {COLUMN} , count(DISTINCT {COLUMN2}) , count(*) FROM {TABLE} GROUP BY {COLUMN}",
+        "type": ["ANY", "ANY"]
+    },
+    {
+        "question": [
+            "What is the {COLUMN} in each {COLUMN2} of {TABLE} whose {COLUMN} is greater than {VALUE_INT}?",
+            "Return {COLUMN} and {COLUMN2}s for {TABLE} where {COLUMN} is above {VALUE_INT}.",
+            "Which instances of {COLUMN} and {COLUMN2} exist for which {COLUMN} is larger than {VALUE_INT} in {TABLE}?"
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} WHERE {COLUMN} > {VALUE_INT}",
+        "type": ["NUMBER", "ANY"],
+        "value_int": ["0"]
+    },
+    {
+        "question": [
+            "Who are the {TABLE} that have {COLUMN} containing '{VALUE_STR}'?",
+            "Which {TABLE} have the substring '{VALUE_STR}' in their {COLUMN}?"
+        ],
+        "query": "SELECT DISTINCT {COLUMN} FROM {TABLE} WHERE {COLUMN} LIKE '%{VALUE_STR}%'",
+        "type": ["TEXT"],
+        "value_str": ["0"]
+    },
+    {
+        "question": [
+            "Count the number of different {COLUMN} in the list of {TABLE}.",
+            "How many {TABLE} are there with different {COLUMN}?",
+            "What is the number of {TABLE} with distinct {COLUMNS}s?"
+        ],
+        "query": "SELECT count(DISTINCT {COLUMN}) FROM {TABLE}",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "Find the {COLUMN} with exactly one records.",
+            "Which of the {COLUMN} have a single appearance?",
+            "Show any {COLUMN} with exactly 1 times."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING count(*) = 1",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "How many {COLUMN} does each {COLUMN2} have?",
+            "For each {COLUMN2}, show {COLUMN2} and the sum of {COLUMN}.",
+            "What is the total {COLUMN} for each {COLUMN2} in {TABLE}?"
+        ],
+        "query": "SELECT sum({COLUMN}) , {COLUMN2} FROM {TABLE} GROUP BY {COLUMN2}",
+        "type": ["NUMBER", "ANY"]
+    },
+    {
+        "question": [
+            "What is the {COLUMN} of all {TABLE} who does not have a value for {COLUMN2}?",
+            "Show the {COLUMN} of {TABLE} where {COLUMN2} is null.",
+            "Return {COLUMN} for each {TABLE} for which {COLUMN2} does not have a value.",
+            "Report the {COLUMN} for all {TABLE} with a null value in {COLUMN2}."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} IS NULL",
+        "type": ["ANY", "ANY"]
+    },
+    {
+        "question": [
+            "How many {TABLE} are there?",
+            "What is the number of {TABLE} available?",
+            "Count the number of {TABLE}."
+        ],
+        "query": "SELECT count(*) FROM {TABLE}",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "What is the {COLUMN} of {TABLE} where {COLUMN2} is not {VALUE_INT}?",
+            "Report the {COLUMN} of all {TABLE} for which {COLUMN2} does not equals to {VALUE_INT}.",
+            "Show the {COLUMN} of any {TABLE} whose {COLUMN2} is different from {VALUE_INT}."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} != {VALUE_INT}",
+        "type": ["ANY", "NUMBER"],
+        "value_int": ["1"]
+    },
+    {
+        "question": [
+            "How many {TABLE} are there with a {COLUMN} of {VALUE_INT} or {VALUE_INT2}?",
+            "What is the number of {TABLE} that has a {COLUMN} of either {VALUE_INT} or {VALUE_INT2}?",
+            "Report the number of {TABLE} where {COLUMN} is {VALUE_INT} or {VALUE_INT2}."
+        ],
+        "query": "SELECT COUNT (*) FROM {TABLE} WHERE {COLUMN} = {VALUE_INT} OR {COLUMN} = {VALUE_INT2}",
+        "type": ["NUMBER"],
+        "value_int": ["0", "0"]
+    },
+    {
+        "question": [
+            "How many {TABLE} has a {COLUMN} of more than {VALUE_INT} and a {COLUMN2} is {VALUE_STR}?",
+            "Report the number of {TABLE} with a {COLUMN2} identical with {VALUE_STR} and greater than {VALUE_INT} {COLUMN}.",
+            "Count the cases where a {TABLE} has a {COLUMN} of above {VALUE_INT} and a {COLUMN2} equal to {VALUE_STR}."
+        ],
+        "query": "SELECT COUNT (*) FROM {TABLE} WHERE {COLUMN} > {VALUE_INT} AND {COLUMN2} = \"{VALUE_STR}\"",
+        "type": ["NUMBER", "TEXT"],
+        "value_int": ["0"],
+        "value_str": ["1"]
+    },
+    {
+        "question": [
+            "List all information in the case where {COLUMN} is below zero.",
+            "Show all info on instances where {COLUMN} is less than 0."
+        ],
+        "query": "SELECT * FROM {TABLE} WHERE {COLUMN} < 0",
+        "type": ["NUMBER"]
+    },
+    {
+        "question": [
+            "List the {COLUMN} and {COLUMN2} of the {TABLE} ordered alphabetically by {COLUMN2}.",
+            "For each {TABLE}, list {COLUMN} and {COLUMN2} in alphabetic order sorted by {COLUMN2}."
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} ORDER BY {COLUMN2}",
+        "type": ["ANY", "TEXT"]
+    },
+    {
+        "question": [
+            "Return the {COLUMN} of the {TABLE} where {COLUMN2} is {VALUE_STR}",
+            "Show {COLUMN} of any {TABLE} in which {COLUMN2} equals {VALUE_STR}",
+            "What is the {COLUMN} of the {TABLE} with {VALUE_STR} as their {COLUMN2}?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} = '{VALUE_STR}'",
+        "type": ["ANY", "TEXT"],
+        "value_str": ["1"]
+    },
+    {
+        "question": [
+            "Show different {COLUMN} and the number of {TABLE} for each {COLUMN}.",
+            "List different {COLUMN} and count how many {TABLE} there are in each {COLUMN}"
+        ],
+        "query": "SELECT {COLUMN} , COUNT(*) FROM {TABLE} GROUP BY {COLUMN}",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "Count the number of {TABLE} with more than {VALUE_INT} {COLUMN} and a {COLUMN2} above {VALUE_INT2}.",
+            "How many {TABLE} have a {COLUMN} of more than {VALUE_INT} and a {COLUMN2} of more than {VALUE_INT2}?",
+            "What is the number of {TABLE} where {COLUMN} is more than {VALUE_INT} and {COLUMN2} is greater than {VALUE_INT2}?"
+        ],
+        "query": "SELECT count(*) FROM {TABLE} WHERE {COLUMN} > {VALUE_INT} AND {COLUMN2} > {VALUE_INT2}",
+        "type": ["NUMBER", "NUMBER"],
+        "value_int": ["0", "1"]
+    },
+    {
+        "question": [
+            "Find all {COLUMN} and {COLUMN2} for the {TABLE} whose {COLUMN} is smaller than {VALUE_INT}.",
+            "List all {COLUMN} and {COLUMN2} for {TABLE} with less than {VALUE_INT} {COLUMN}."
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} WHERE {COLUMN} < {VALUE_INT}",
+        "type": ["NUMBER", "ANY"],
+        "value_int": ["0"]
+    },
+    {
+        "question": [
+            "What are the {COLUMN} of {TABLE} that contain the substring '{VALUE_STR}'?",
+            "Which {COLUMN} contain the word '{VALUE_STR}'?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN} LIKE '%{VALUE_STR}%'",
+        "type": ["TEXT"],
+        "value_str": ["0"]
+    },
+    {
+        "question": [
+            "Find the number of {TABLE} with a {COLUMN2} of more than {VALUE_INT} for each {COLUMN},",
+            "For each {COLUMN}, list all {TABLE} that has a {COLUMN2} of above {VALUE_INT}."
+        ],
+        "query": "SELECT count(*) , {COLUMN} FROM {TABLE} WHERE {COLUMN2} > {VALUE_INT} GROUP BY {COLUMN}",
+        "type": ["ANY", "NUMBER"],
+        "value_int": ["1"]
+    },
+    {
+        "question": [
+            "Find {COLUMN} and {COLUMN2} of the top 3 {COLUMN}.",
+            "What is the {COLUMN} and {COLUMN2} of the 3 most {COLUMN} {TABLE}?",
+            "Show {COLUMN} and {COLUMN2} of the 3 {TABLE} with the highest {COLUMN}."
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} ORDER BY {COLUMN} DESC LIMIT 3",
+        "type": ["NUMBER", "ANY"]
+    },
+    {
+        "question": [
+            "What is the {COLUMN} of the {TABLE} with a {COLUMN2} of '{VALUE_STR}' or 'Renmin Univ'?",
+            "Find the {COLUMN} of the {TABLE} that has a {COLUMN2} of either '{VALUE_STR}' or 'Renmin Univ'."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} = '{VALUE_STR}' OR {COLUMN2} = 'Renmin Univ'",
+        "type": ["ANY", "TEXT"],
+        "value_str": ["1"]
+    },
+    {
+        "question": [
+            "What is the average and maximum {COLUMN} of each {TABLE}?",
+            "What is the mean and max {COLUMN} for all {TABLE}?",
+            "For each {TABLE}, show the average and maximum {COLUMN}."
+        ],
+        "query": "SELECT avg({COLUMN}), max({COLUMN}) FROM {TABLE}",
+        "type": ["NUMBER"]
+    },
+    {
+        "question": [
+            "How many {TABLE} are there after {COLUMN} 2014?",
+            "Count the number of {TABLE} with a {COLUMN} of more than 2014.",
+            "How many {TABLE} have a {COLUMN} of above 2014?"
+        ],
+        "query": "SELECT count(*) FROM {TABLE} WHERE {COLUMN} > 2014",
+        "type": ["YEAR"]
+    },
+    {
+        "question": [
+            "How many distinct {COLUMN} are there with {COLUMN2} is {VALUE_STR}?",
+            "Count the number of different {COLUMN} with {COLUMN2} of '{VALUE_STR}'."
+        ],
+        "query": "SELECT COUNT(DISTINCT {COLUMN}) FROM {TABLE} WHERE {COLUMN2} = \"{VALUE_STR}\"",
+        "type": ["ANY", "TEXT"],
+        "value_str": ["1"]
+    },
+    {
+        "question": [
+            "Give the {COLUMN} of {TABLE} that have more than 2 corresponding {COLUMN}.",
+            "Return {COLUMN} from {TABLE} that have more than 2 of the same {COLUMN}.",
+            "List the {COLUMN} of {TABLE} that have more than 2 matching {COLUMN}.",
+            "Which {COLUMN} have more than two {TABLE}?",
+            "Give all {COLUMN} that have more than 2 {TABLE}."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING count(*) > 2",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "What are the {COLUMN} of the {TABLE} available on more than one occasion?",
+            "Show the {COLUMN} of {TABLE} that occur more than once."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING count(*) > 1",
+        "type": ["ANY"]
+    },
+    {
+        "question": [
+            "What are the {COLUMN} for every {TABLE} who has an sum {COLUMN2} of more than 10?",
+            "What are the {COLUMN} for everyone who {COLUMN2} more than 10, grouped by {COLUMN}?",
+            "Show all the {COLUMN} with a total {COLUMN2} of greater than 10."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} GROUP BY {COLUMN} HAVING sum({COLUMN2}) > 10",
+        "type": ["ANY", "NUMBER"]
+    },
+    {
+        "question": [
+            "Show all the {COLUMN} with at least four {TABLE} with {COLUMN2} above {VALUE_INT}.",
+            "List all {COLUMN} with 4 or more {TABLE} having a {COLUMN2} of more than {VALUE_INT}.",
+            "What are the {COLUMN} with at least 4 {TABLE} where {COLUMN2} is larger than {VALUE_INT}?"
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} > {VALUE_INT} GROUP BY {COLUMN} HAVING count(*) >= 4",
+        "type": ["ANY", "NUMBER"],
+        "value_int": ["1"]
+    },
+    {
+        "question": [
+            "How many {TABLE} {COLUMN} before 1980?",
+            "How many {TABLE} have a {COLUMN} of less than 1980?",
+            "Count the number of {TABLE} with a {COLUMN} smaller than 1980."
+        ],
+        "query": "SELECT count(*) FROM {TABLE} WHERE {COLUMN} < 1980",
+        "type": ["NUMBER"]
+    },
+    {
+        "question": [
+            "How many {TABLE} have a {COLUMN} that is {VALUE_STR} or a {COLUMN2} equal to {VALUE_INT}?",
+            "What is the number of {TABLE} with a {VALUE_STR} {COLUMN} or a {COLUMN2} of {VALUE_INT}?",
+            "Count how many {TABLE} that either have a {COLUMN} of {VALUE_STR} or a {COLUMN2} of {VALUE_INT}."
+        ],
+        "query": "SELECT count(*) FROM {TABLE} WHERE {COLUMN} = '{VALUE_STR}' OR {COLUMN2} = {VALUE_INT}",
+        "type": ["TEXT", "NUMBER"],
+        "value_int": ["1"],
+        "value_str": ["0"]
+    },
+    {
+        "question": [
+            "please list the {COLUMN} and {COLUMN2} of {TABLE} in descending order of {COLUMN3} .",
+            "what are the {COLUMN} and {COLUMN2} of each {TABLE} , listed in descending order by {COLUMN3} ?",
+            "list the {COLUMN} and {COLUMN2} of all {TABLE} sorted by {COLUMN3} in descending order .",
+            "what are the {COLUMN} and {COLUMN2} of all {TABLE} sorted by decreasing {COLUMN3} ?",
+            "sort the list of {COLUMN} and {COLUMN2} of all {TABLE} in the descending order of {COLUMN3} ."
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} ORDER BY {COLUMN3} DESC",
+        "type": ["ANY", "ANY", "NUMBER"]
+    },
+    {
+        "question": [
+            "show the {COLUMN} and {COLUMN2} with at least 5 {COLUMN3} .",
+            "what are the {COLUMN} and {COLUMN2} of {TABLE} with 5 or more {COLUMN3} ?",
+            "find the {COLUMN} and {COLUMN2}  of the {TABLE} with at least 5 {COLUMN3} ."
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} GROUP BY {COLUMN3} HAVING COUNT (*) >= 5",
+        "type": ["ANY", "ANY", "ANY"]
+    },
+    {
+        "question": [
+            "list {COLUMN} and {COLUMN2} who have {COLUMN3} greater than {VALUE_INT} or {COLUMN3} shorter than {VALUE_INT2} .",
+            "what are the {COLUMN} and {COLUMN2} of the {COLUMN} who have {COLUMN3} above {VALUE_INT} or {COLUMN3} below {VALUE_INT2} ?"
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} WHERE {COLUMN3} > {VALUE_INT} OR {COLUMN3} < {VALUE_INT2}",
+        "type": ["ANY", "ANY", "NUMBER"], 
+        "value_int": ["2", "2"]
+    },
+    {
+        "question": [
+            "what is the {COLUMN} and {COLUMN2} for the {TABLE} with the rank 5 smallest {COLUMN3} ?",
+            "return the {COLUMN} and {COLUMN2} of {TABLE} with the five lowest {COLUMN3} .",
+            "what is the {COLUMN} and {COLUMN2} of the {TABLE} with the top 5 smallest {COLUMN3} ?"
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} FROM {TABLE} ORDER BY {COLUMN3} LIMIT 5",
+        "type": ["ANY", "ANY", "NUMBER"]
+    },
+    {
+        "question": [
+            "list the {COLUMN} , {COLUMN2} and the {COLUMN3} of the {TABLE} .",
+            "what are the {COLUMN} , {COLUMN2} , and {COLUMN3} of each {TABLE} ?",
+            "display the {COLUMN} , {COLUMN2} , and {COLUMN3} for each {TABLE} .",
+            "what are the {COLUMN} , {COLUMN2} , and {COLUMN3} for each {TABLE} ?",
+            "show the {COLUMN} , {COLUMN2} , and {COLUMN3} of all the {TABLE} .",
+            "what are the {COLUMN} , {COLUMN2} , and {COLUMN3} of each {TABLE} ?"
+        ],
+        "query": "SELECT {COLUMN} , {COLUMN2} , {COLUMN3} FROM {TABLE}",
+        "type": ["ANY", "ANY", "ANY"]
+    },
+    {
+        "question": [
+            "Find the {COLUMN} of {TABLE} with a {COLUMN2} same as {VALUE_STR} and whose {COLUMN3} is between {VALUE_INT} and {VALUE_INT2}.",
+            "Report {COLUMN} of {TABLE} in {COLUMN2} is {VALUE_STR} with a {COLUMN3} between {VALUE_INT} and {VALUE_INT2}."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} = '{VALUE_STR}' AND {COLUMN3} BETWEEN {VALUE_INT} AND {VALUE_INT2}",
+        "type": ["ANY", "TEXT", "NUMBER"],
+        "value_int": ["2", "2"],
+        "value_str": ["1"]
+    },
+    {
+        "question": [
+            "Find the {COLUMN} of {TABLE} whose {COLUMN2} is between {VALUE_INT} and {VALUE_INT2}.",
+            "Return {COLUMN} of any {TABLE} with {COLUMN2} between {VALUE_INT} and {VALUE_INT2}."
+        ],
+        "query": "SELECT {COLUMN} FROM {TABLE} WHERE {COLUMN2} BETWEEN {VALUE_INT} AND {VALUE_INT2}",
+        "type": ["ANY", "NUMBER"],
+        "value_int": ["1", "1"]
+    },
+    {
+        "question": [
+            "Report all information about {TABLE} with {COLUMN} between {VALUE_INT} and {VALUE_INT2} for which {COLUMN2} is {VALUE_STR}.",
+            "Return everything about {TABLE} whose {COLUMN} is between {VALUE_INT} and {VALUE_INT2} and with a {COLUMN2} equal to {VALUE_STR}."
+        ],
+        "query": "SELECT * FROM {TABLE} WHERE {COLUMN} BETWEEN {VALUE_INT} AND {VALUE_INT2} AND {COLUMN2} = \"{VALUE_STR}\"",
+        "type": ["NUMBER", "TEXT"],
+        "value_int": ["0", "0"],
+        "value_str": ["1"]
+    }
+]
